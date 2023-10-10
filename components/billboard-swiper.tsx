@@ -31,7 +31,7 @@ export const BillboardSwiper: React.FC<BillboardSwiperProps> = ({ data }) => {
             pagination={{ clickable: true }}
             loop
             autoplay={{
-                delay: 5000,
+                delay: 3000,
                 disableOnInteraction: true,
             }}
             effect="fade"
