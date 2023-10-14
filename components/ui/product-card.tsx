@@ -2,8 +2,11 @@
 
 import { Expand, ShoppingCart } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { IProduct } from "@/types";
+
+import { usePreviewModal } from "@/hooks/use-preview-modal";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,16 +18,23 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Currency } from "@/components/ui/currency";
-import { usePreviewModal } from "@/hooks/use-preview-modal";
-import { useRouter } from "next/navigation";
+import { useCart } from "@/hooks/use-cart";
 
 interface ProductCardProps {
     product: IProduct;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-    const router = useRouter();
+    const {
+        items,
+        addItem,
+        removeItem,
+        increaseItemQuantity,
+        decreaseItemQuantity,
+        removeAllItems,
+    } = useCart();
     const { onOpen } = usePreviewModal();
+    const router = useRouter();
 
     const handleClick = () => {
         router.push(`/products/${product.id}`);
@@ -34,6 +44,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         e.stopPropagation();
 
         onOpen(product);
+    };
+
+    const onAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+
+        addItem(product);
     };
 
     return (
@@ -57,7 +73,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         >
                             <Expand size={20} />
                         </Button>
-                        <Button variant="outline" size="icon">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={onAddToCart}
+                        >
                             <ShoppingCart size={20} />
                         </Button>
                     </div>

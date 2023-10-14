@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navbar";
 
 import "./globals.css";
 import { ModalProviders } from "@/providers/modal-providers";
+import { Toaster } from "sonner";
 
 const urbanist = Urbanist({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
         <html lang="en">
             <body className={urbanist.className}>
                 <ModalProviders />
+                <Toaster richColors />
                 <Navbar />
                 {children}
                 <Footer />
