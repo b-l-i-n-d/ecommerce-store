@@ -15,6 +15,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Currency } from "@/components/ui/currency";
+import { usePreviewModal } from "@/hooks/use-preview-modal";
 import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
@@ -23,9 +24,16 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const router = useRouter();
+    const { onOpen } = usePreviewModal();
 
     const handleClick = () => {
         router.push(`/products/${product.id}`);
+    };
+
+    const onPreview = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+
+        onOpen(product);
     };
 
     return (
@@ -42,7 +50,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 />
                 <div className="opacity-0 group-hover:opacity-100 transition absolute w-full bottom-5">
                     <div className="flex gap-x-6 justify-center">
-                        <Button variant="outline" size="icon">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={onPreview}
+                        >
                             <Expand size={20} />
                         </Button>
                         <Button variant="outline" size="icon">
@@ -52,8 +64,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </div>
             </CardHeader>
             {/* Description */}
-            <CardContent className="py-0">
-                <CardTitle className="font-semibold text-lg">
+            <CardContent className="py-0 mb-auto">
+                <CardTitle className="font-semibold text-lg line-clamp-2">
                     {product.name}
                 </CardTitle>
                 <CardDescription className="text-sm text-gray-500">
