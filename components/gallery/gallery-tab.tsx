@@ -1,7 +1,8 @@
-import { TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 
-import { Image as ImageType } from "@/types";
+import { TabsTrigger } from "@/components/ui/tabs";
+
+import { IImage as ImageType } from "@/types";
 
 interface GalleryTabProps {
     image: ImageType;

@@ -15,9 +15,9 @@ export const MainNav: React.FC<MainNavProps> = ({ data }) => {
     const pathname = usePathname();
 
     const routes = data.map((route: any) => ({
-        href: `/categorey/${route.id}`,
+        href: `/category/${route.id}`,
         label: route.name,
-        isActive: pathname === `/categorey/${route.id}`,
+        isActive: pathname === `/category/${route.id}`,
     }));
 
     return (

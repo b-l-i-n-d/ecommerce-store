@@ -1,4 +1,4 @@
-export interface IBilboard {
+export interface IBillboard {
     id: string;
     label: string;
     imageUrl: string;
@@ -7,7 +7,7 @@ export interface IBilboard {
 export interface ICategory {
     id: string;
     name: string;
-    bilboard: IBilboard;
+    billboard: IBillboard;
 }
 
 export interface IProduct {
@@ -16,23 +16,23 @@ export interface IProduct {
     name: string;
     price: number;
     isFeatured: boolean;
-    size: Size;
-    color: Color;
-    images: Image[];
+    size: ISize;
+    color: IColor;
+    images: IImage[];
 }
 
-export interface Image {
+export interface IImage {
     id: string;
     url: string;
 }
 
-export interface Size {
+export interface ISize {
     id: string;
     name: string;
     value: string;
 }
 
-export interface Color {
+export interface IColor {
     id: string;
     name: string;
     value: string;

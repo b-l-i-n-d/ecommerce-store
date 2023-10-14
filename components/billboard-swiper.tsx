@@ -9,7 +9,7 @@ import {
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { IBilboard } from "@/types";
+import { IBillboard } from "@/types";
 
 import { Billboard } from "@/components/ui/billboard";
 
@@ -19,7 +19,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 interface BillboardSwiperProps {
-    data: IBilboard[];
+    data: IBillboard[];
 }
 
 export const BillboardSwiper: React.FC<BillboardSwiperProps> = ({ data }) => {

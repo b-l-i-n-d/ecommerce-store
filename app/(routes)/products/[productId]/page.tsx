@@ -1,3 +1,5 @@
+import { NextPage } from "next";
+
 import { getProduct } from "@/actions/get-product";
 import { getProducts } from "@/actions/get-products";
 
@@ -13,7 +15,7 @@ interface ProductPageProps {
     };
 }
 
-const Product: React.FC<ProductPageProps> = async ({ params }) => {
+const Product: NextPage<ProductPageProps> = async ({ params }) => {
     const product = await getProduct(params?.productId);
     const suggestedProducts = await getProducts({
         categoryId: product?.category?.id,

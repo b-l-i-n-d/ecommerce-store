@@ -1,7 +1,7 @@
-import { IBilboard } from "@/types";
+import { IBillboard } from "@/types";
 
 interface BillboardProps {
-    data: IBilboard;
+    data: IBillboard;
 }
 
 export const Billboard: React.FC<BillboardProps> = ({ data }) => {

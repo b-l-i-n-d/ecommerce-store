@@ -1,10 +1,10 @@
 import Image from "next/image";
 
+import { GalleryTab } from "@/components/gallery/gallery-tab";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
-import { Card, CardContent } from "../ui/card";
 
-import { Image as ImageType } from "@/types";
-import { GalleryTab } from "./gallery-tab";
+import { IImage as ImageType } from "@/types";
 
 interface GalleryProps {
     images: ImageType[];
@@ -17,7 +17,7 @@ export const Gallery: React.FC<GalleryProps> = ({ images }) => {
                 <TabsContent
                     key={image.id}
                     value={image.id}
-                    className="aspect-square w-full"
+                    className="aspect-square w-full m-0"
                 >
                     <Card className="aspect-square relative h-full w-full sm:rounded-lg overflow-hidden">
                         <CardContent className="space-y-2">
