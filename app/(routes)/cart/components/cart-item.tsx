@@ -1,11 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Currency } from "@/components/ui/currency";
-import { useCart } from "@/hooks/use-cart";
-import { IProduct } from "@/types";
 import { Minus, Plus, X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { Currency } from "@/components/ui/currency";
+
+import { useCart } from "@/hooks/use-cart";
+
+import { IProduct } from "@/types";
 
 interface CartItemProps {
     item: IProduct & { quantity: number };
@@ -38,9 +42,11 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
                 </div>
                 <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
                     <div className="flex justify-between">
-                        <h3 className="text-lg font-semibold text-primary">
-                            {item.name}
-                        </h3>
+                        <Link href={`/products/${item.id}`}>
+                            <h3 className="text-lg font-semibold text-primary hover:underline">
+                                {item.name}
+                            </h3>
+                        </Link>
                     </div>
                     <div className="mt-1 flex text-sm">
                         <p className="text-muted-foreground pl-4 border-l">
@@ -52,6 +58,17 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
                     </div>
                     <Currency value={item.price} />
                 </div>
+                {item.stock - item.quantity > 10 ? (
+                    <p className="text-muted-foreground">Currenlty in stock.</p>
+                ) : (item.stock - item.quantity > 0 &&
+                      item.stock - item.quantity < 10) ||
+                  item.stock - item.quantity > 0 ? (
+                    <p className="text-destructive">
+                        Only {item.stock - item.quantity} will be left in stock.
+                    </p>
+                ) : (
+                    <p className="text-destructive">Will be out of stock.</p>
+                )}
                 <div className="flex gap-x-6 items-center">
                     <Button
                         size="icon"

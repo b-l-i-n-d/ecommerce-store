@@ -1,21 +1,30 @@
-import { IProduct } from "@/types";
+"use client";
+
 import { ShoppingCart } from "lucide-react";
-import { Button } from "./ui/button";
+
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
     CardFooter,
     CardHeader,
     CardTitle,
-} from "./ui/card";
-import { Currency } from "./ui/currency";
-import { Separator } from "./ui/separator";
+} from "@/components/ui/card";
+import { Currency } from "@/components/ui/currency";
+import { Separator } from "@/components/ui/separator";
+
+import { useCart } from "@/hooks/use-cart";
+
+import { IProduct } from "@/types";
+import { cn } from "@/lib/utils";
 
 interface InfoProps {
     product: IProduct;
 }
 
 export const Info: React.FC<InfoProps> = ({ product }) => {
+    const { addItem } = useCart();
+
     return (
         <Card>
             <CardHeader>
@@ -43,11 +52,24 @@ export const Info: React.FC<InfoProps> = ({ product }) => {
                         />
                         <div>{product?.color?.name}</div>
                     </div>
+
+                    <div
+                        className={cn(
+                            "text-sm font-semibold text-muted-foreground",
+                            product?.stock < 10 && "text-destructive"
+                        )}
+                    >
+                        {product?.stock > 10
+                            ? "In stock"
+                            : product?.stock < 10 && product?.stock > 0
+                            ? `Only ${product?.stock} left in stock`
+                            : "Out of stock"}
+                    </div>
                 </div>
             </CardContent>
 
             <CardFooter>
-                <Button>
+                <Button onClick={() => addItem(product)}>
                     <ShoppingCart size={16} />
                     <span className="ml-2">Add to cart</span>
                 </Button>

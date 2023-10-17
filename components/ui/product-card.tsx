@@ -19,20 +19,14 @@ import {
 } from "@/components/ui/card";
 import { Currency } from "@/components/ui/currency";
 import { useCart } from "@/hooks/use-cart";
+import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
     product: IProduct;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-    const {
-        items,
-        addItem,
-        removeItem,
-        increaseItemQuantity,
-        decreaseItemQuantity,
-        removeAllItems,
-    } = useCart();
+    const { addItem } = useCart();
     const { onOpen } = usePreviewModal();
     const router = useRouter();
 
@@ -88,8 +82,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 <CardTitle className="font-semibold text-lg line-clamp-2">
                     {product.name}
                 </CardTitle>
-                <CardDescription className="text-sm text-gray-500">
+                <CardDescription className="text-sm text-muted-foreground">
                     {product.category?.name}
+                </CardDescription>
+                <CardDescription
+                    className={cn(
+                        "text-sm text-muted-foreground",
+                        product?.stock < 10 && "text-destructive"
+                    )}
+                >
+                    {product?.stock > 10
+                        ? "In stock"
+                        : product?.stock < 10 && product?.stock > 0
+                        ? `Only ${product?.stock} left in stock`
+                        : "Out of stock"}
                 </CardDescription>
             </CardContent>
             {/* Price & Reiew */}
