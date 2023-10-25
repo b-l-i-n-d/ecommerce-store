@@ -12,12 +12,13 @@ import { useCart } from "@/hooks/use-cart";
 import { IProduct } from "@/types";
 
 interface CartItemProps {
-    item: IProduct & { quantity: number };
+    item: IProduct & { quantity: number; selectedSize: string };
 }
 
 export const CartItem: React.FC<CartItemProps> = ({ item }) => {
-    const { removeItem, increaseItemQuantity, decreaseItemQuantity } =
-        useCart();
+    const removeItem = useCart((state) => state.removeItem);
+    const increaseItemQuantity = useCart((state) => state.increaseItemQuantity);
+    const decreaseItemQuantity = useCart((state) => state.decreaseItemQuantity);
 
     return (
         <div className="flex py-6 border-b">
@@ -30,12 +31,12 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
                 />
             </div>
             <div className="relative ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                <div className="absolute z-10 right-0 top-0">
+                <div className="absolute z-[5] right-0 top-0">
                     <Button
                         size="icon"
                         variant="secondary"
                         className="rounded-full"
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item.id, item.selectedSize)}
                     >
                         <X size={15} />
                     </Button>
@@ -53,18 +54,43 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
                             {item.color.name}
                         </p>
                         <p className="text-muted-foreground ml-4 border-l pl-4">
-                            {item.size.name}
+                            {
+                                // item.sizes.find(
+                                //     (size) => size.size.id === item.selctedSize
+                                // )?.size.name
+                                // get the item, where size.size.id === item.selctedSize
+
+                                item?.sizes?.find(
+                                    (size) => size.size.id === item.selectedSize
+                                )?.size.name ?? item.selectedSize
+                            }
                         </p>
                     </div>
                     <Currency value={item.price} />
                 </div>
-                {item.stock - item.quantity > 10 ? (
+                {item.selectedSize === undefined ? (
+                    ""
+                ) : item?.sizes?.find(
+                      (size) => size.size.id === item.selectedSize
+                  )?.stock ?? 0 - item.quantity > 10 ? (
                     <p className="text-muted-foreground">Currenlty in stock.</p>
-                ) : (item.stock - item.quantity > 0 &&
-                      item.stock - item.quantity < 10) ||
-                  item.stock - item.quantity > 0 ? (
-                    <p className="text-destructive">
-                        Only {item.stock - item.quantity} will be left in stock.
+                ) : item?.sizes?.find(
+                      (size) => size.size.id === item.selectedSize
+                  )?.stock !== undefined &&
+                  item?.sizes?.find(
+                      (size) => size.size.id === item.selectedSize
+                  )?.stock! < 10 &&
+                  item?.sizes?.find(
+                      (size) => size.size.id === item.selectedSize
+                  )?.stock! > 0 ? (
+                    <p className="text-muted-foreground">
+                        Only{" "}
+                        {
+                            item?.sizes?.find(
+                                (size) => size.size.id === item.selectedSize
+                            )?.stock
+                        }{" "}
+                        left in stock.
                     </p>
                 ) : (
                     <p className="text-destructive">Will be out of stock.</p>
@@ -73,7 +99,9 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
                     <Button
                         size="icon"
                         variant="outline"
-                        onClick={() => increaseItemQuantity(item.id)}
+                        onClick={() =>
+                            increaseItemQuantity(item.id, item.selectedSize)
+                        }
                     >
                         <Plus size={15} />
                     </Button>
@@ -83,7 +111,9 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
                     <Button
                         size="icon"
                         variant="outline"
-                        onClick={() => decreaseItemQuantity(item.id)}
+                        onClick={() =>
+                            decreaseItemQuantity(item.id, item.selectedSize)
+                        }
                     >
                         <Minus size={15} />
                     </Button>

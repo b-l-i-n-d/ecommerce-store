@@ -12,11 +12,11 @@ export const Navbar = async () => {
     const categories = await getCategories();
 
     return (
-        <div className="border-b">
+        <div className="border-b top-0 inset-x-0 fixed z-10 backdrop-blur-sm bg-white">
             <Container>
                 <div className="relative px-4 sm:px-6 lg:px-8 flex h-16 items-center">
                     <Link className="ml-4 flex lg:ml-0 gap-x-2" href="/">
-                        <p className="text-xl font-bold">E-Commerce Store</p>
+                        <p className="text-xl font-bold">EC</p>
                     </Link>
 
                     <MainNav data={categories} />

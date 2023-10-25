@@ -16,9 +16,8 @@ export interface IProduct {
     name: string;
     price: number;
     isFeatured: boolean;
-    size: ISize;
+    sizes: ISizeStock[];
     color: IColor;
-    stock: number;
     images: IImage[];
 }
 
@@ -37,4 +36,9 @@ export interface IColor {
     id: string;
     name: string;
     value: string;
+}
+
+export interface ISizeStock {
+    size: ISize;
+    stock: number;
 }

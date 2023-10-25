@@ -1,6 +1,7 @@
 "use client";
 
 import { ShoppingCart } from "lucide-react";
+import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,19 +12,27 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Currency } from "@/components/ui/currency";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 
 import { useCart } from "@/hooks/use-cart";
 
-import { IProduct } from "@/types";
 import { cn } from "@/lib/utils";
+import { IProduct } from "@/types";
 
 interface InfoProps {
     product: IProduct;
 }
 
 export const Info: React.FC<InfoProps> = ({ product }) => {
-    const { addItem } = useCart();
+    const addItem = useCart((state) => state.addItem);
+    const selectedSize = useCart((state) => state.selectedSize);
+    const setSelectedSize = useCart((state) => state.setSelectedSize);
+
+    useEffect(() => {
+        setSelectedSize(undefined);
+    }, [setSelectedSize]);
 
     return (
         <Card>
@@ -36,8 +45,32 @@ export const Info: React.FC<InfoProps> = ({ product }) => {
             <CardContent>
                 <div className="flex flex-col gap-y-6">
                     <div className="flex items-center gap-x-4 text-primary">
-                        <h3 className="font-semibold">Size:</h3>
-                        <div>{product?.size?.name}</div>
+                        <h3 className="font-semibold">Sizes:</h3>
+                        <RadioGroup
+                            defaultValue={undefined}
+                            value={selectedSize}
+                            className="flex"
+                            onValueChange={(value) => setSelectedSize(value)}
+                        >
+                            {product?.sizes?.map((size) => (
+                                <div
+                                    key={size.size.id}
+                                    className="flex items-center space-x-2"
+                                >
+                                    <RadioGroupItem
+                                        value={size.size.id}
+                                        id={size.size.id}
+                                        className="peer sr-only"
+                                    />
+                                    <Label
+                                        htmlFor={size.size.id}
+                                        className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                                    >
+                                        {size.size.name}
+                                    </Label>
+                                </div>
+                            ))}
+                        </RadioGroup>
                     </div>
 
                     <div className="flex items-center gap-x-4 text-primary">
@@ -56,20 +89,46 @@ export const Info: React.FC<InfoProps> = ({ product }) => {
                     <div
                         className={cn(
                             "text-sm font-semibold text-muted-foreground",
-                            product?.stock < 10 && "text-destructive"
+                            (product?.sizes?.find(
+                                (size) => size.size.id === selectedSize
+                            )?.stock ?? 0) < 10 && "text-destructive"
                         )}
                     >
-                        {product?.stock > 10
+                        {selectedSize === undefined
+                            ? ""
+                            : product?.sizes?.find(
+                                  (size) => size.size.id === selectedSize
+                              )?.stock ?? 0 > 10
                             ? "In stock"
-                            : product?.stock < 10 && product?.stock > 0
-                            ? `Only ${product?.stock} left in stock`
+                            : product?.sizes?.find(
+                                  (size) => size.size.id === selectedSize
+                              )?.stock !== undefined &&
+                              product?.sizes?.find(
+                                  (size) => size.size.id === selectedSize
+                              )?.stock! < 10 &&
+                              product?.sizes?.find(
+                                  (size) => size.size.id === selectedSize
+                              )?.stock! > 0
+                            ? `Only ${
+                                  product?.sizes?.find(
+                                      (size) => size.size.id === selectedSize
+                                  )?.stock
+                              } left in stock`
                             : "Out of stock"}
                     </div>
                 </div>
             </CardContent>
 
             <CardFooter>
-                <Button onClick={() => addItem(product)}>
+                <Button
+                    onClick={() => addItem(product)}
+                    disabled={
+                        selectedSize === undefined ||
+                        product?.sizes?.find(
+                            (size) => size.size.id === selectedSize
+                        )?.stock === 0
+                    }
+                >
                     <ShoppingCart size={16} />
                     <span className="ml-2">Add to cart</span>
                 </Button>

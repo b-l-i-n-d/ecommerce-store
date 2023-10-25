@@ -33,7 +33,10 @@ const CartPage: NextPage = () => {
                             </p>
                         ) : (
                             items.map((item) => (
-                                <CartItem key={item.id} item={item} />
+                                <CartItem
+                                    key={item.id + item.selectedSize}
+                                    item={item}
+                                />
                             ))
                         )}
                     </div>

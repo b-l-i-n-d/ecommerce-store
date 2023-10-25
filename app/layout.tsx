@@ -4,9 +4,10 @@ import { Urbanist } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 
-import "./globals.css";
 import { ModalProviders } from "@/providers/modal-providers";
+import NProgressProviders from "@/providers/nprogress-provider";
 import { Toaster } from "sonner";
+import "./globals.css";
 
 const urbanist = Urbanist({ subsets: ["latin"] });
 
@@ -23,11 +24,13 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={urbanist.className}>
-                <ModalProviders />
-                <Toaster richColors />
-                <Navbar />
-                {children}
-                <Footer />
+                <NProgressProviders>
+                    <ModalProviders />
+                    <Toaster richColors />
+                    <Navbar />
+                    <div className="mt-10">{children}</div>
+                    <Footer />
+                </NProgressProviders>
             </body>
         </html>
     );

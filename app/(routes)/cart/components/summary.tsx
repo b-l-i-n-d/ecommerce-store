@@ -15,13 +15,16 @@ import {
 } from "@/components/ui/card";
 import { Currency } from "@/components/ui/currency";
 
-import { useCart } from "@/hooks/use-cart";
 import { Separator } from "@/components/ui/separator";
+import { useCart } from "@/hooks/use-cart";
 
 interface SummaryProps {}
 
 export const Summary: React.FC<SummaryProps> = ({}) => {
-    const { items, removeItem, removeAllItems } = useCart();
+    const items = useCart((state) => state.items);
+    const removeItem = useCart((state) => state.removeItem);
+    const removeAllItems = useCart((state) => state.removeAllItems);
+
     const searchParams = useSearchParams();
 
     const totalPrice = items.reduce(
@@ -35,6 +38,7 @@ export const Summary: React.FC<SummaryProps> = ({}) => {
             {
                 items: items.map((item) => ({
                     id: item.id,
+                    selectedSize: item.selectedSize,
                     quantity: item.quantity,
                 })),
             }
@@ -55,10 +59,14 @@ export const Summary: React.FC<SummaryProps> = ({}) => {
     }, [removeAllItems, searchParams]);
 
     useEffect(() => {
-        const outOfStockItems = items.filter((item) => item.stock === 0);
+        const outOfStockItems = items.filter(
+            (item) =>
+                item.sizes.find((size) => size.size.id === item.selectedSize)
+                    ?.stock === 0
+        );
 
         for (const item of outOfStockItems) {
-            removeItem(item.id);
+            removeItem(item.id, item.selectedSize);
         }
 
         if (outOfStockItems.length > 0) {

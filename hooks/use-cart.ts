@@ -5,12 +5,14 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { IProduct } from "@/types";
 
 interface ICartStore {
-    items: (IProduct & { quantity: number })[];
+    items: (IProduct & { quantity: number; selectedSize: string })[];
     addItem: (item: IProduct) => void;
-    removeItem: (id: string) => void;
-    increaseItemQuantity: (id: string) => void;
-    decreaseItemQuantity: (id: string) => void;
+    removeItem: (id: string, selectedSize: string) => void;
+    increaseItemQuantity: (id: string, selectedSize: string) => void;
+    decreaseItemQuantity: (id: string, selectedSize: string) => void;
     removeAllItems: () => void;
+    selectedSize: string | undefined;
+    setSelectedSize: (size: string | undefined) => void;
 }
 
 export const useCart = create(
@@ -19,30 +21,53 @@ export const useCart = create(
             items: [],
             addItem: (item) => {
                 const currentItems = get().items;
-                const isItemExist = currentItems.some(
-                    (currentItem) => currentItem.id === item.id
-                );
-
-                if (item.stock === 0) {
-                    return toast.error("Item out of stock");
+                const isItemExist = // get the the matched item
+                    currentItems.filter(
+                        (currentItem) =>
+                            currentItem.id === item.id &&
+                            currentItem.selectedSize === get().selectedSize
+                    ) ?? [];
+                if (get().selectedSize === undefined) {
+                    return toast.error("Please select size");
                 }
 
-                if (isItemExist) {
+                if (isItemExist.length > 0) {
                     const newItems = currentItems.map((currentItem) => {
-                        if (currentItem.id === item.id) {
-                            if (currentItem.stock > currentItem.quantity) {
+                        if (currentItem.id === isItemExist[0].id) {
+                            if (
+                                currentItem.selectedSize ===
+                                    get().selectedSize &&
+                                (currentItem.sizes.find(
+                                    (size) =>
+                                        size.size.id === get().selectedSize
+                                )?.stock ?? 0) > currentItem.quantity
+                            ) {
                                 toast.success("Item added to cart");
                                 return {
                                     ...currentItem,
                                     quantity: currentItem.quantity + 1,
+                                    selectedSize: get().selectedSize ?? "",
                                 };
-                            } else {
+                            } else if (
+                                currentItem.selectedSize ===
+                                    get().selectedSize &&
+                                (currentItem.sizes.find(
+                                    (size) =>
+                                        size.size.id === get().selectedSize
+                                )?.stock ?? 0) <= currentItem.quantity
+                            ) {
                                 toast.error("Item out of stock");
+                                return currentItem;
+                            } else {
                                 return currentItem;
                             }
                         } else {
                             toast.success("Item added to cart");
-                            return currentItem;
+                            return {
+                                ...currentItem,
+                                quantity: 1,
+                                selectedSize: get().selectedSize ?? "",
+                            };
                         }
                     });
 
@@ -50,22 +75,40 @@ export const useCart = create(
                 } else {
                     toast.success("Item added to cart");
                     return set({
-                        items: [...currentItems, { ...item, quantity: 1 }],
+                        items: [
+                            ...currentItems,
+                            {
+                                ...item,
+                                quantity: 1,
+                                selectedSize: get().selectedSize ?? "",
+                            },
+                        ],
                     });
                 }
             },
-            removeItem: (id) => {
+            removeItem: (id, selectedSize) => {
                 toast.success("Item removed from cart");
 
                 return set({
-                    items: get().items.filter((item) => item.id !== id),
+                    items: get().items.filter(
+                        (item) =>
+                            item.id !== id || item.selectedSize !== selectedSize
+                    ),
                 });
             },
-            increaseItemQuantity: (id) => {
+            increaseItemQuantity: (id, selectedSize) => {
                 const currentItems = get().items;
                 const newItems = currentItems.map((currentItem) => {
-                    if (currentItem.id === id) {
-                        if (currentItem.stock > currentItem.quantity) {
+                    if (
+                        currentItem.id === id &&
+                        currentItem.selectedSize === selectedSize
+                    ) {
+                        if (
+                            currentItem.sizes.find(
+                                (size) => size.size.id === get().selectedSize
+                            )?.stock ??
+                            0 > currentItem.quantity
+                        ) {
                             toast.success("Item added to cart");
                             return {
                                 ...currentItem,
@@ -84,23 +127,29 @@ export const useCart = create(
 
                 return set({ items: newItems });
             },
-            decreaseItemQuantity: (id) => {
+            decreaseItemQuantity: (id, selectedSize) => {
                 const currentItems = get().items;
-                const newItems = currentItems.map((currentItem) =>
-                    currentItem.id === id
-                        ? {
-                              ...currentItem,
-                              quantity:
-                                  currentItem.quantity > 1
-                                      ? currentItem.quantity - 1
-                                      : currentItem.quantity,
-                          }
-                        : currentItem
-                );
+                const newItems = currentItems.map((currentItem) => {
+                    if (
+                        currentItem.id === id &&
+                        currentItem.selectedSize === selectedSize &&
+                        currentItem.quantity > 1
+                    ) {
+                        toast.success("Item removed from cart");
+                        return {
+                            ...currentItem,
+                            quantity: currentItem.quantity - 1,
+                        };
+                    } else {
+                        return currentItem;
+                    }
+                });
 
                 return set({ items: newItems });
             },
             removeAllItems: () => set({ items: [] }),
+            selectedSize: undefined,
+            setSelectedSize: (size) => set({ selectedSize: size }),
         }),
         {
             name: "cart",

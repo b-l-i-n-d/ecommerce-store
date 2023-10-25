@@ -15,6 +15,8 @@ interface ProductPageProps {
     };
 }
 
+export const revalidate = 0;
+
 const Product: NextPage<ProductPageProps> = async ({ params }) => {
     const product = await getProduct(params?.productId);
     const suggestedProducts = await getProducts({
