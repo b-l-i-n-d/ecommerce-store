@@ -64,7 +64,7 @@ export const Info: React.FC<InfoProps> = ({ product }) => {
                                     />
                                     <Label
                                         htmlFor={size.size.id}
-                                        className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                                        className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                                     >
                                         {size.size.name}
                                     </Label>
@@ -86,36 +86,30 @@ export const Info: React.FC<InfoProps> = ({ product }) => {
                         <div>{product?.color?.name}</div>
                     </div>
 
-                    <div
+                    <p
                         className={cn(
                             "text-sm font-semibold text-muted-foreground",
-                            (product?.sizes?.find(
+                            product?.sizes?.find(
                                 (size) => size.size.id === selectedSize
-                            )?.stock ?? 0) < 10 && "text-destructive"
+                            )?.stock! < 10 && "text-destructive"
                         )}
                     >
                         {selectedSize === undefined
-                            ? ""
+                            ? "Select a size"
                             : product?.sizes?.find(
                                   (size) => size.size.id === selectedSize
-                              )?.stock ?? 0 > 10
+                              )?.stock! > 10
                             ? "In stock"
                             : product?.sizes?.find(
                                   (size) => size.size.id === selectedSize
-                              )?.stock !== undefined &&
-                              product?.sizes?.find(
-                                  (size) => size.size.id === selectedSize
-                              )?.stock! < 10 &&
-                              product?.sizes?.find(
-                                  (size) => size.size.id === selectedSize
-                              )?.stock! > 0
+                              )?.stock! < 10
                             ? `Only ${
                                   product?.sizes?.find(
                                       (size) => size.size.id === selectedSize
                                   )?.stock
                               } left in stock`
                             : "Out of stock"}
-                    </div>
+                    </p>
                 </div>
             </CardContent>
 

@@ -37,10 +37,10 @@ export const useCart = create(
                             if (
                                 currentItem.selectedSize ===
                                     get().selectedSize &&
-                                (currentItem.sizes.find(
+                                currentItem.sizes.find(
                                     (size) =>
                                         size.size.id === get().selectedSize
-                                )?.stock ?? 0) > currentItem.quantity
+                                )?.stock! > currentItem.quantity
                             ) {
                                 toast.success("Item added to cart");
                                 return {
@@ -51,10 +51,10 @@ export const useCart = create(
                             } else if (
                                 currentItem.selectedSize ===
                                     get().selectedSize &&
-                                (currentItem.sizes.find(
+                                currentItem.sizes.find(
                                     (size) =>
                                         size.size.id === get().selectedSize
-                                )?.stock ?? 0) <= currentItem.quantity
+                                )?.stock! <= currentItem.quantity
                             ) {
                                 toast.error("Item out of stock");
                                 return currentItem;
@@ -105,7 +105,7 @@ export const useCart = create(
                     ) {
                         if (
                             currentItem.sizes.find(
-                                (size) => size.size.id === get().selectedSize
+                                (size) => size.size.id === selectedSize
                             )?.stock ??
                             0 > currentItem.quantity
                         ) {

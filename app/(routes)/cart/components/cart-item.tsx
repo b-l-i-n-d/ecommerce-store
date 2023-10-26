@@ -72,18 +72,19 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
                     ""
                 ) : item?.sizes?.find(
                       (size) => size.size.id === item.selectedSize
-                  )?.stock ?? 0 - item.quantity > 10 ? (
-                    <p className="text-muted-foreground">Currenlty in stock.</p>
+                  )?.stock! -
+                      item.quantity >
+                  10 ? (
+                    <p className="text-muted-foreground transition-all duration-150">
+                        Currenlty in stock.
+                    </p>
                 ) : item?.sizes?.find(
-                      (size) => size.size.id === item.selectedSize
-                  )?.stock !== undefined &&
-                  item?.sizes?.find(
                       (size) => size.size.id === item.selectedSize
                   )?.stock! < 10 &&
                   item?.sizes?.find(
                       (size) => size.size.id === item.selectedSize
                   )?.stock! > 0 ? (
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground transition-all duration-150">
                         Only{" "}
                         {
                             item?.sizes?.find(
@@ -93,7 +94,9 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
                         left in stock.
                     </p>
                 ) : (
-                    <p className="text-destructive">Will be out of stock.</p>
+                    <p className="text-destructive transition-all duration-150">
+                        Will be out of stock.
+                    </p>
                 )}
                 <div className="flex gap-x-6 items-center">
                     <Button

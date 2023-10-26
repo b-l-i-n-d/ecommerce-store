@@ -23,7 +23,7 @@ export const PreviewModal: React.FC = () => {
                 }
             }}
         >
-            <DialogContent className="lg:max-w-screen-lg overflow-y-auto max-h-[90vh]">
+            <DialogContent className="sm:max-w-screen-md lg:max-w-screen-lg overflow-y-auto max-h-[90vh] rounded-md">
                 <div className="grid grid-cols-1 w-full items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
                     <div className="sm:col-span-4 lg:col-span-5">
                         <Gallery images={product.images} />

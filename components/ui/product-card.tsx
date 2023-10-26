@@ -1,6 +1,6 @@
 "use client";
 
-import { Expand, ShoppingCart } from "lucide-react";
+import { Expand, ExternalLink, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -26,8 +26,8 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-    const addItem = useCart((state) => state.addItem);
-    const selectedSize = useCart((state) => state.selectedSize);
+    // const addItem = useCart((state) => state.addItem);
+    // const selectedSize = useCart((state) => state.selectedSize);
     const setSelectedSize = useCart((state) => state.setSelectedSize);
     const onOpen = usePreviewModal((state) => state.onOpen);
     const router = useRouter();
@@ -42,13 +42,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         onOpen(product);
     };
 
-    const onAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
+    // const onAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    //     e.stopPropagation();
 
-        if (selectedSize) {
-            addItem(product);
-        }
-    };
+    //     if (selectedSize) {
+    //         addItem(product);
+    //     }
+    // };
 
     useEffect(() => {
         setSelectedSize(undefined);
@@ -75,12 +75,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         >
                             <Expand size={20} />
                         </Button>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={onAddToCart}
-                        >
-                            <ShoppingCart size={20} />
+                        <Button variant="outline" size="icon">
+                            <ExternalLink size={20} />
                         </Button>
                     </div>
                 </div>
